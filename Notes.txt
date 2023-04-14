@@ -79,3 +79,68 @@ Parking
 Prefarea
 Furnishingstatus
 The target variable is the house price.
+
+
+
+
+
+2.Data Preprocessing
+
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+
+# Load the dataset
+df = pd.read_csv('House Pricing.csv')
+
+# Check for missing values
+print(df.isnull().sum())
+
+# There are no missing values in this dataset.
+
+# Convert categorical variables into dummy variables
+categorical_cols = ['mainroad', 'guestroom', 'basement', 'hotwaterheating', 'airconditioning', 'prefarea', 'furnishingstatus']
+encoder = OneHotEncoder(drop='first', sparse=False)
+encoded_cols = pd.DataFrame(encoder.fit_transform(df[categorical_cols]))
+encoded_cols.columns = encoder.get_feature_names(categorical_cols)
+
+# Replace categorical columns with encoded columns
+df = pd.concat([df.drop(categorical_cols, axis=1), encoded_cols], axis=1)
+
+# Scale numerical features
+scaler = StandardScaler()
+num_cols = ['price', 'area', 'bedrooms', 'bathrooms', 'stories', 'parking']
+df[num_cols] = scaler.fit_transform(df[num_cols])
+
+# Split the dataset into training and testing sets
+X = df.drop('price', axis=1)
+y = df['price']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Verify the shape of the training and testing sets
+print("Training set shape:", X_train.shape, y_train.shape)
+print("Testing set shape:", X_test.shape, y_test.shape)
+
+-----------------------------------------------------------------
+
+
+-In this code, we first check for any missing values in the dataset using the isnull() function. 
+-Since there are no missing values, we move on to converting the categorical variables 
+ into dummy variables using the OneHotEncoder from sklearn.preprocessing. 
+-We then replace the categorical columns with the encoded columns using the concat() function.
+
+-Next, we scale the numerical features using the StandardScaler from sklearn.preprocessing. 
+-Finally, we split the dataset into training and testing sets using the train_test_split() function 
+ from sklearn.model_selection. 
+-The training set contains 80% of the data and the testing set contains 20% of the data.
+
+-Note that this is just one example of how to perform data preprocessing on this 
+dataset and there may be other ways to handle categorical variables or normalize 
+numerical features depending on the problem at hand.
+
+
+
+# OneHotEncoder ??
+ - Convert categorical data into numerical data
